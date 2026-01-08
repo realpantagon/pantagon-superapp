@@ -1,0 +1,10 @@
+name = "pantagon-items-api"
+main = "worker/index.ts"
+compatibility_date = "2024-01-01"
+
+# Environment variables (use wrangler secret put for sensitive data)
+# Set these with: wrangler secret put SUPABASE_URL
+# Set these with: wrangler secret put SUPABASE_ANON_KEY
+
+[env.production]
+name = "pantagon-items-api"

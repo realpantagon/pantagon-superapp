@@ -38,7 +38,7 @@ export default function EditItem() {
   const fetchItem = async (itemId: string) => {
     try {
       const { data, error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .select('*')
         .eq('id', itemId)
         .single();
@@ -106,7 +106,7 @@ export default function EditItem() {
     setLoading(true);
     try {
       const { error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .update({
           name: formData.name.trim(),
           category: formData.category.trim() || null,

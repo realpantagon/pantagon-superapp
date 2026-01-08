@@ -33,7 +33,7 @@ export default function ItemsList() {
   const fetchItems = async () => {
     try {
       const { data, error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .select('*')
         .order('buy_date', { ascending: false });
 

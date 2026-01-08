@@ -22,7 +22,7 @@ export default function ItemDetails() {
   const fetchItem = async (itemId: string) => {
     try {
       const { data, error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .select('*')
         .eq('id', itemId)
         .single();
@@ -41,7 +41,7 @@ export default function ItemDetails() {
 
     try {
       const { error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .delete()
         .eq('id', item.id);
 

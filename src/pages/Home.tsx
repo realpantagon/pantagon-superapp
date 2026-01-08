@@ -33,6 +33,15 @@ export default function Home() {
       available: true,
     },
     {
+      id: 'fcd',
+      name: 'FCD Tracker',
+      description: 'Track foreign currency deposits',
+      icon: '💵',
+      route: '/fcd-app',
+      color: 'from-green-500 to-teal-600',
+      available: true,
+    },
+    {
       id: 'finance',
       name: 'Finance Tracker',
       description: 'Track income and expenses',
@@ -103,7 +112,7 @@ export default function Home() {
 
         {/* Footer */}
         <div className="mt-8 text-center text-xs text-gray-500">
-          <p>v1.0.0</p>
+          <p>v2.0.0</p>
         </div>
       </div>
     </div>

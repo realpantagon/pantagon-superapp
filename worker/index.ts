@@ -29,7 +29,7 @@ export default {
       // GET /api/items - Get all items
       if (path === '/api/items' && request.method === 'GET') {
         const { data, error } = await supabase
-          .from('pantagon_items')
+          .from('Pantagon_items')
           .select('*')
           .order('buy_date', { ascending: false });
 
@@ -45,7 +45,7 @@ export default {
         const id = path.split('/').pop();
         
         const { data, error } = await supabase
-          .from('pantagon_items')
+          .from('Pantagon_items')
           .select('*')
           .eq('id', id)
           .single();
@@ -62,7 +62,7 @@ export default {
         const body = await request.json();
 
         const { data, error } = await supabase
-          .from('pantagon_items')
+          .from('Pantagon_items')
           .insert([body])
           .select()
           .single();
@@ -81,7 +81,7 @@ export default {
         const body = await request.json();
 
         const { data, error } = await supabase
-          .from('pantagon_items')
+          .from('Pantagon_items')
           .update(body)
           .eq('id', id)
           .select()
@@ -99,7 +99,7 @@ export default {
         const id = path.split('/').pop();
 
         const { error } = await supabase
-          .from('pantagon_items')
+          .from('Pantagon_items')
           .delete()
           .eq('id', id);
 

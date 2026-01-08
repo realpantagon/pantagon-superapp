@@ -3,7 +3,7 @@ import type { PantagonItem } from './types';
 
 export async function fetchItems(): Promise<PantagonItem[]> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .select('*')
     .order('buy_date', { ascending: false });
 
@@ -13,7 +13,7 @@ export async function fetchItems(): Promise<PantagonItem[]> {
 
 export async function fetchItemById(id: string): Promise<PantagonItem> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .select('*')
     .eq('id', id)
     .single();
@@ -24,7 +24,7 @@ export async function fetchItemById(id: string): Promise<PantagonItem> {
 
 export async function createItem(item: Omit<PantagonItem, 'id' | 'created_at' | 'updated_at'>): Promise<PantagonItem> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .insert([item])
     .select()
     .single();
@@ -35,7 +35,7 @@ export async function createItem(item: Omit<PantagonItem, 'id' | 'created_at' | 
 
 export async function updateItem(id: string, updates: Partial<PantagonItem>): Promise<PantagonItem> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .update(updates)
     .eq('id', id)
     .select()
@@ -47,7 +47,7 @@ export async function updateItem(id: string, updates: Partial<PantagonItem>): Pr
 
 export async function deleteItem(id: string): Promise<void> {
   const { error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .delete()
     .eq('id', id);
 
@@ -56,7 +56,7 @@ export async function deleteItem(id: string): Promise<void> {
 
 export async function fetchUniqueGroups(): Promise<string[]> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .select('group_name')
     .not('group_name', 'is', null);
 
@@ -68,7 +68,7 @@ export async function fetchUniqueGroups(): Promise<string[]> {
 
 export async function fetchUniqueCategories(): Promise<string[]> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .select('category')
     .not('category', 'is', null);
 
@@ -80,7 +80,7 @@ export async function fetchUniqueCategories(): Promise<string[]> {
 
 export async function fetchUniquePurchaseSources(): Promise<string[]> {
   const { data, error } = await supabase
-    .from('pantagon_items')
+    .from('Pantagon_items')
     .select('purchase_source')
     .not('purchase_source', 'is', null);
 

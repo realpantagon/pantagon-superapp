@@ -77,7 +77,7 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     try {
       const { data: items, error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .select('*')
         .order('buy_date', { ascending: false });
 
@@ -146,7 +146,7 @@ export default function Dashboard() {
 
     try {
       const { error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .insert([{
           name: quickAddData.name.trim(),
           buy_price: parseFloat(quickAddData.buy_price),

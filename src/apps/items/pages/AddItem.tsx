@@ -33,7 +33,7 @@ export default function AddItem() {
   const fetchExistingOptions = async () => {
     try {
       const { data } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .select('category, group_name');
 
       if (data) {
@@ -81,7 +81,7 @@ export default function AddItem() {
     setLoading(true);
     try {
       const { error } = await supabase
-        .from('pantagon_items')
+        .from('Pantagon_items')
         .insert([{
           name: formData.name.trim(),
           category: formData.category.trim() || null,

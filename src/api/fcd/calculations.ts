@@ -27,7 +27,7 @@ export function calculateFCDStats(entries: FCDEntry[]): FCDStats {
   // Count by status
   const inCount = entries.filter(e => e.status === 'IN').length;
   const interestCount = entries.filter(e => e.status === 'Interest').length;
-  const outCount = entries.filter(e => e.status === 'Out').length;
+//   const outCount = entries.filter(e => e.status === 'Out').length;
   
   return {
     total_usd,

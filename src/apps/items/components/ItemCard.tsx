@@ -21,10 +21,17 @@ export default function ItemCard({ item, dailyBurn }: ItemCardProps) {
                     <h3 className="text-white font-semibold text-base mb-1 group-hover:text-blue-400 transition-colors">
                         {item.name}
                     </h3>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500 font-medium bg-gray-800/80 px-2 py-0.5 rounded border border-gray-700/50">
-                            {item.group_name || 'No Group'}
-                        </span>
+                    <div className="flex flex-wrap gap-1">
+                        {item.tags?.slice(0, 3).map(tag => (
+                            <span key={tag} className="text-[10px] text-gray-400 font-medium bg-gray-900/60 px-1.5 py-0.5 rounded border border-gray-700/50">
+                                {tag}
+                            </span>
+                        ))}
+                        {item.tags && item.tags.length > 3 && (
+                            <span className="text-[10px] text-gray-500 font-medium px-1 py-0.5">
+                                +{item.tags.length - 3}
+                            </span>
+                        )}
                     </div>
                 </div>
                 <div className="text-right">
@@ -32,8 +39,8 @@ export default function ItemCard({ item, dailyBurn }: ItemCardProps) {
                         {formatCurrency(item.buy_price)}
                     </div>
                     <div className={`mt-1 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${item.status === 'owned'
-                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                            : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                        : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
                         }`}>
                         {item.status}
                     </div>

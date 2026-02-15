@@ -95,21 +95,26 @@ export default function ItemDetails() {
             <div className="mb-1">
               <h1 className="text-3xl font-bold text-white tracking-tight">{item.name}</h1>
             </div>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex flex-wrap items-center gap-2 mt-2">
               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${item.status === 'owned'
                 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                 : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
                 }`}>
                 {item.status}
               </span>
-              <span className="text-gray-600 self-center mx-1">•</span>
-              <p className="text-gray-400 flex items-center gap-2 text-sm">
-                <span className="text-gray-300 font-medium">
-                  {item.group_name || 'Uncategorized'}
-                </span>
-                <span className="text-gray-600">•</span>
-                <span>{item.category || 'No Category'}</span>
-              </p>
+
+              {item.tags && item.tags.length > 0 ? (
+                <>
+                  <span className="text-gray-600 self-center mx-1">•</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {item.tags.map(tag => (
+                      <span key={tag} className="px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-xs text-gray-300">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
         </div>

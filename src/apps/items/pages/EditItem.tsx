@@ -5,6 +5,7 @@ import { supabase } from '../../../shared/utils/supabase';
 import Button from '../../../shared/components/Button';
 import Input from '../../../shared/components/Input';
 import Select from '../../../shared/components/Select';
+import TagInput from '../components/TagInput';
 
 export default function EditItem() {
   const { id } = useParams<{ id: string }>();
@@ -15,8 +16,7 @@ export default function EditItem() {
 
   const [formData, setFormData] = useState({
     name: '',
-    category: '',
-    group_name: '',
+    tags: [] as string[],
     buy_date: '',
     buy_price: '',
     extra_cost: '0',
@@ -49,8 +49,7 @@ export default function EditItem() {
       if (data) {
         setFormData({
           name: data.name,
-          category: data.category || '',
-          group_name: data.group_name || '',
+          tags: data.tags || [],
           buy_date: data.buy_date,
           buy_price: data.buy_price.toString(),
           extra_cost: data.extra_cost.toString(),
@@ -84,6 +83,10 @@ export default function EditItem() {
     }
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    setFormData(prev => ({ ...prev, tags: newTags }));
+  };
+
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
@@ -115,8 +118,7 @@ export default function EditItem() {
         .from('Pantagon_items')
         .update({
           name: formData.name.trim(),
-          category: formData.category.trim() || null,
-          group_name: formData.group_name.trim() || null,
+          tags: formData.tags,
           buy_date: formData.buy_date,
           buy_price: parseFloat(formData.buy_price),
           extra_cost: parseFloat(formData.extra_cost) || 0,
@@ -176,35 +178,30 @@ export default function EditItem() {
                 className="bg-[#1a1a1a] border-gray-700 text-white"
               />
 
-              <Input
-                label="Category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                placeholder="e.g., Electronics"
-                className="bg-[#1a1a1a] border-gray-700 text-white"
-              />
+              <div className="md:col-span-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Tags
+                </label>
+                <TagInput
+                  value={formData.tags}
+                  onChange={handleTagsChange}
+                  placeholder="Select or type new tags..."
+                />
+              </div>
 
-              <Input
-                label="Group Name"
-                name="group_name"
-                value={formData.group_name}
-                onChange={handleChange}
-                placeholder="e.g., Smartphones"
-                className="bg-[#1a1a1a] border-gray-700 text-white"
-              />
-
-              <Select
-                label="Status *"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                options={[
-                  { value: 'owned', label: 'Owned' },
-                  { value: 'sold', label: 'Sold' },
-                ]}
-                className="bg-[#1a1a1a] border-gray-700 text-white"
-              />
+              <div className="md:col-span-2">
+                <Select
+                  label="Status *"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                  options={[
+                    { value: 'owned', label: 'Owned' },
+                    { value: 'sold', label: 'Sold' },
+                  ]}
+                  className="bg-[#1a1a1a] border-gray-700 text-white"
+                />
+              </div>
             </div>
           </div>
 

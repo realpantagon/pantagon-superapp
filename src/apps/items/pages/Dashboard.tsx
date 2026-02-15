@@ -1,26 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../shared/utils/supabase';
-import type { DashboardStats, GroupBurnRate, PantagonItem } from '../../../api/items/types';
+import type { DashboardStats, PantagonItem } from '../../../api/items/types';
 import { calculateDailyBurnRate, calculateTotalProfit, formatCurrency } from '../../../api/items/calculations';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import Button from '../../../shared/components/Button';
 import ItemCard from '../../items/components/ItemCard';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [groupData, setGroupData] = useState<GroupBurnRate[]>([]);
   const [items, setItems] = useState<PantagonItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<PantagonItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [groups, setGroups] = useState<string[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [allTags, setAllTags] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -30,7 +23,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     filterItems();
-  }, [items, searchTerm, selectedGroup, selectedStatus, selectedCategory]);
+  }, [items, searchTerm, selectedStatus, selectedTag]);
 
   const filterItems = () => {
     let filtered = [...items];
@@ -41,16 +34,12 @@ export default function Dashboard() {
       );
     }
 
-    if (selectedGroup) {
-      filtered = filtered.filter(item => item.group_name === selectedGroup);
-    }
-
     if (selectedStatus) {
       filtered = filtered.filter(item => item.status === selectedStatus);
     }
 
-    if (selectedCategory) {
-      filtered = filtered.filter(item => item.category === selectedCategory);
+    if (selectedTag) {
+      filtered = filtered.filter(item => item.tags && item.tags.includes(selectedTag));
     }
 
     setFilteredItems(filtered);
@@ -94,35 +83,13 @@ export default function Dashboard() {
         setItems(items);
         setFilteredItems(items);
 
-        // Get unique groups and categories
-        const uniqueGroups = Array.from(new Set(items.map(item => item.group_name).filter(Boolean))) as string[];
-        const uniqueCategories = Array.from(new Set(items.map(item => item.category).filter(Boolean))) as string[];
-        setGroups(uniqueGroups);
-        setCategories(uniqueCategories);
-
-        // Calculate group burn rates - ONLY OWNED ITEMS that are part of daily burn
-        const ownedItemsOnly = items.filter(item => item.status === 'owned' && item.daily_burn);
-        const groupMap = new Map<string, { totalBurn: number; count: number }>();
-        ownedItemsOnly.forEach(item => {
-          const group = item.group_name || 'No Group';
-          const daysHeld = Math.max(1, Math.floor((Date.now() - new Date(item.buy_date).getTime()) / (1000 * 60 * 60 * 24)));
-          const realCost = item.buy_price + item.extra_cost;
-          const burnRate = realCost / daysHeld;
-
-          if (!groupMap.has(group)) {
-            groupMap.set(group, { totalBurn: 0, count: 0 });
-          }
-          const current = groupMap.get(group)!;
-          current.totalBurn += burnRate;
-          current.count += 1;
-        });
-
-        const groupBurnRates: GroupBurnRate[] = Array.from(groupMap.entries()).map(([group, data]) => ({
-          group_name: group,
-          avg_burn_rate: data.totalBurn,
-          item_count: data.count,
-        }));
-        setGroupData(groupBurnRates);
+        // Get unique tags
+        const tags = Array.from(new Set(
+          items
+            .flatMap(item => item.tags || [])
+            .filter(Boolean)
+        )) as string[];
+        setAllTags(tags.sort());
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -199,62 +166,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Bar Chart - Group Burn Rates */}
-      <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-700/50 shadow-sm">
-        <h2 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-6">
-          Daily Burn by Group
-        </h2>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={groupData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
-            <XAxis
-              dataKey="group_name"
-              stroke="#9CA3AF"
-              tick={{ fontSize: 10 }}
-              axisLine={false}
-              tickLine={false}
-              dy={10}
-            />
-            <YAxis
-              stroke="#9CA3AF"
-              tick={{ fontSize: 10 }}
-              axisLine={false}
-              tickLine={false}
-              dx={-10}
-            />
-            <Tooltip
-              cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-              contentStyle={{
-                backgroundColor: '#111827',
-                border: '1px solid #374151',
-                borderRadius: '12px',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)'
-              }}
-              labelStyle={{ color: '#F9FAFB', fontWeight: 600, marginBottom: '4px' }}
-            />
-            <Bar
-              dataKey="avg_burn_rate"
-              fill="#3b82f6"
-              name="Avg ฿/day"
-              radius={[4, 4, 0, 0]}
-              barSize={32}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
       {/* Items List Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-lg font-bold text-white">Recent Items</h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/list')}
-            className="text-blue-400 hover:text-blue-300 px-0"
-          >
-            See All →
-          </Button>
+
         </div>
 
         <div className="relative">
@@ -294,28 +210,15 @@ export default function Dashboard() {
                 <option value="sold">Sold</option>
               </select>
 
-              {groups.length > 0 && (
+              {allTags.length > 0 && (
                 <select
-                  value={selectedGroup || ''}
-                  onChange={(e) => setSelectedGroup(e.target.value || null)}
+                  value={selectedTag || ''}
+                  onChange={(e) => setSelectedTag(e.target.value || null)}
                   className="px-3 py-1.5 bg-gray-800/50 border border-gray-700/50 rounded-lg text-white text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
-                  <option value="">Group: All</option>
-                  {groups.map(group => (
-                    <option key={group} value={group}>{group}</option>
-                  ))}
-                </select>
-              )}
-
-              {categories.length > 0 && (
-                <select
-                  value={selectedCategory || ''}
-                  onChange={(e) => setSelectedCategory(e.target.value || null)}
-                  className="px-3 py-1.5 bg-gray-800/50 border border-gray-700/50 rounded-lg text-white text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="">Category: All</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                  <option value="">Tag: All</option>
+                  {allTags.map(tag => (
+                    <option key={tag} value={tag}>{tag}</option>
                   ))}
                 </select>
               )}

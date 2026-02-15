@@ -1,8 +1,7 @@
 export interface PantagonItem {
   id: string;
   name: string;
-  category: string | null;
-  group_name: string | null;
+  tags: string[] | null;
   buy_date: string;
   buy_price: number;
   extra_cost: number;
@@ -34,14 +33,4 @@ export interface DashboardStats {
   total_profit: number;
 }
 
-export interface GroupBurnRate {
-  group_name: string;
-  avg_burn_rate: number;
-  item_count: number;
-}
 
-export interface CategoryDistribution {
-  category: string;
-  count: number;
-  percentage: number;
-}
